@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
  * Created by pavel on 8/28/16.
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest()
+@SpringBootTest
 //@WebAppConfiguration
 @Transactional
 public abstract class AbstractTest {

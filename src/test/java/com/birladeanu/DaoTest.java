@@ -2,15 +2,11 @@ package com.birladeanu;
 
 import com.birladeanu.dal.dao.GenericDao;
 import com.birladeanu.dal.model.*;
-import com.birladeanu.dal.model.embedabble.Address;
-import com.birladeanu.dal.model.embedabble.City;
-import com.birladeanu.dal.model.embedabble.Dimension;
-import com.birladeanu.dal.model.embedabble.Weight;
+import com.birladeanu.dal.model.embedabble.*;
 import com.birladeanu.dal.model.helpers.Currency;
 import com.birladeanu.dal.model.helpers.GermanZipcode;
 import com.birladeanu.dal.model.helpers.MonetaryAmount;
 import com.birladeanu.dal.model.helpers.SwissZipcode;
-import com.birladeanu.dal.model.Bid;
 import com.birladeanu.dal.model.parent.BillingDetails;
 import com.birladeanu.dal.model.subselect.ItemBidSummary;
 import com.google.common.collect.Sets;
@@ -19,7 +15,9 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 import static com.birladeanu.dal.model.enums.AuctionTypeEnum.FIXED_PRICE;
 import static org.hamcrest.Matchers.is;
@@ -108,6 +106,7 @@ public class DaoTest extends AbstractTest {
         assertEquals(item.getName(), itemBidSummary.getName());
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void testUser() {
         City homeCity = new City("homeCity", new GermanZipcode("12342"), "homeCountry");
@@ -152,6 +151,9 @@ public class DaoTest extends AbstractTest {
         item.setStringImageList(Arrays.asList("C", "B", "D"));
         item.setStringSetImages(Sets.newHashSet("A", "B", "C"));
         item.setStringImageMap(Maps.newHashMap("File", "SomeImg"));
+        item.setItemImages(Sets.newHashSet(new ItemImage(item, "title", "someFile", 1, 1)));
+        item.setImagesMap(Maps.newHashMap(new Filename("SomFileName", "jpg"),
+                new ItemImage(item, "title", "someFile", 1, 1)));
 
         genericDao.persist(item);
         genericDao.getEntityManager().flush();
@@ -161,6 +163,8 @@ public class DaoTest extends AbstractTest {
         assertThat(savedItem.getStringImageList().size(), is(item.getStringImageList().size()));
         assertThat(savedItem.getStringSetImages().size(), is(item.getStringSetImages().size()));
         assertThat(savedItem.getStringImageMap().size(), is(item.getStringImageMap().size()));
+        assertThat(savedItem.getItemImages().size(), is(item.getItemImages().size()));
+        assertThat(savedItem.getImagesMap().size(), is(item.getImagesMap().size()));
     }
 
     private Item createSimpleItem() {

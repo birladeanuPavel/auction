@@ -2,10 +2,13 @@ package com.birladeanu.dal.model;
 
 import com.birladeanu.dal.model.converter.MonetaryAmountConverter;
 import com.birladeanu.dal.model.embedabble.Dimension;
+import com.birladeanu.dal.model.embedabble.Filename;
+import com.birladeanu.dal.model.embedabble.ItemImage;
 import com.birladeanu.dal.model.embedabble.Weight;
 import com.birladeanu.dal.model.enums.AuctionTypeEnum;
 import com.birladeanu.dal.model.helpers.MonetaryAmount;
 import com.birladeanu.dal.model.parent.MainModel;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.*;
@@ -26,6 +29,7 @@ import static com.birladeanu.dal.model.enums.AuctionTypeEnum.HIGHEST_BID;
  */
 @Entity
 @Getter
+@EqualsAndHashCode(exclude = "bids, stringSetImages, stringImageBag, stringImageList, stringImageMap, itemImages")
 public class Item extends MainModel {
 
     @NotNull
@@ -135,5 +139,16 @@ public class Item extends MainModel {
     @Column(name = "IMAGENAME")
     @Setter
     protected Map<String, String> stringImageMap = new HashMap<>();
+
+    @ElementCollection
+    @CollectionTable(name = "IMAGE")
+    @javax.persistence.OrderBy("filename, width DESC")
+    @Setter
+    protected Set<ItemImage> itemImages = new HashSet<>();
+
+    @ElementCollection
+    @CollectionTable(name = "IMAGE_MAP")
+    @Setter
+    protected Map<Filename, ItemImage> imagesMap = new HashMap<>();
 
 }
