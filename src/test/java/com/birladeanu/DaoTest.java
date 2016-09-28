@@ -47,6 +47,7 @@ public class DaoTest extends AbstractTest {
         bid.setAmount(BigDecimal.TEN);
         bid.setCreatedOn(new Date());
         genericDao.persist(item);
+        item.setShipment(new Shipment(item));
         genericDao.persist(bid);
         assertNotNull(bid.getId());
         assertNotNull(item.getId());
@@ -66,6 +67,8 @@ public class DaoTest extends AbstractTest {
         assertTrue(fromDbItem.getAuctionTypeEnum() == FIXED_PRICE);
         assertTrue(item.isVerified());
         assertEquals(item.getInitialPriceWithCurrency().getCurrency(), new Currency("CHF"));
+        assertNotNull(fromDbItem.getShipment());
+        assertNotNull(fromDbItem.getShipment().getItem());
     }
 
     @SuppressWarnings("unchecked")
@@ -117,9 +120,13 @@ public class DaoTest extends AbstractTest {
         BillingDetails firstBillDetail = new BankAccount("Owner", "123", "06", "15");
         BillingDetails secondBillDetail = new CreditCard("Owner", "123", "06", "15");
 
-        User user = new User();
+        User user = new User(homeAddress);
+        ShippingAddress shippingAddress = new ShippingAddress(user);
+        shippingAddress.setCity("TestCity");
+        shippingAddress.setZipcode("Testzipcode");
+        shippingAddress.setStreet("Teststreet");
+        user.setShippingAddress(shippingAddress);
         user.setBillingAdress(billingAddress);
-        user.setHomeAddress(homeAddress);
         user.setDefaultBilling(defaultBilling);
         user.getBillingDetails().add(firstBillDetail);
         user.getBillingDetails().add(secondBillDetail);
@@ -142,6 +149,9 @@ public class DaoTest extends AbstractTest {
                         .setParameter("id", user.getId()).getResultList();
         assertTrue(billingDetailsFromDb != null);
         assertThat(billingDetailses.size(), is(2));
+        User savedUser = genericDao.getEntityManager().find(User.class, user.getId());
+        assertNotNull(savedUser.getShippingAddress());
+        assertThat(savedUser.getShippingAddress().getId(), is(user.getId()));
     }
 
     @Test

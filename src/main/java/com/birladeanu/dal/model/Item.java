@@ -101,7 +101,8 @@ public class Item extends MainModel {
     @Setter
     protected Dimension dimension;
 
-    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "item", cascade = CascadeType.PERSIST)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     protected Set<Bid> bids = new HashSet<>();
 
 //    String image mappings [Just for study]
@@ -150,5 +151,13 @@ public class Item extends MainModel {
     @CollectionTable(name = "IMAGE_MAP")
     @Setter
     protected Map<Filename, ItemImage> imagesMap = new HashMap<>();
+
+//    One to one
+    @OneToOne(fetch = FetchType.LAZY,
+            mappedBy = "item",
+            cascade = CascadeType.PERSIST
+    )
+    @Setter
+    protected Shipment shipment;
 
 }

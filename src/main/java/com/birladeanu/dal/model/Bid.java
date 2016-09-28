@@ -17,7 +17,7 @@ import java.util.Date;
  */
 @Entity
 @Immutable
-@EqualsAndHashCode
+@EqualsAndHashCode(exclude = "item")
 @Getter
 public class Bid extends MainModel {
 
@@ -37,7 +37,7 @@ public class Bid extends MainModel {
 //    @JoinColumn
     protected Item item;
 
-    public Bid() {
+    protected Bid() {
     }
 
     public Bid(Item item) {
