@@ -30,7 +30,16 @@ import static com.birladeanu.dal.model.enums.AuctionTypeEnum.HIGHEST_BID;
 @Entity
 @Getter
 @EqualsAndHashCode(exclude = "bids, stringSetImages, stringImageBag, stringImageList, stringImageMap, itemImages")
+@Check(constraints = "auctionStart < auctionEnd")
 public class Item extends MainModel {
+
+    @NotNull
+    @Setter
+    protected Date auctionStart;
+
+    @NotNull
+    @Setter
+    protected Date auctionEnd;
 
     @NotNull
     @Size(min = 2, max = 255, message = "Name is required, maximum 255 characters")

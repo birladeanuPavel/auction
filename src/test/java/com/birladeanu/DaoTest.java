@@ -43,6 +43,8 @@ public class DaoTest extends AbstractTest {
         item.setInitialPriceWithCurrency(new MonetaryAmount(BigDecimal.ONE, new Currency("RON")));
         item.setWeight(new Weight("Kilos", "KG", BigDecimal.TEN));
         item.setDimension(new Dimension("Length", "cm", BigDecimal.ONE, BigDecimal.ONE, BigDecimal.ONE));
+        item.setAuctionEnd(new Date());
+        item.setAuctionStart(new Date());
         Bid bid = new Bid(item);
         bid.setAmount(BigDecimal.TEN);
         bid.setCreatedOn(new Date());
@@ -80,6 +82,8 @@ public class DaoTest extends AbstractTest {
         item2.setName("Table");
         item2.setBuyNowPrice(new MonetaryAmount(BigDecimal.TEN, new Currency("CHF")));
         item2.setInitialPriceWithCurrency(new MonetaryAmount(BigDecimal.ZERO, new Currency("USD")));
+        item2.setAuctionEnd(new Date());
+        item2.setAuctionStart(new Date());
         genericDao.persist(item2);
         genericDao.getEntityManager().flush();
 
@@ -121,6 +125,8 @@ public class DaoTest extends AbstractTest {
         BillingDetails secondBillDetail = new CreditCard("Owner", "123", "06", "15");
 
         User user = new User(homeAddress);
+        user.setUserName("test");
+        user.setEmail("test@mail.ru");
         ShippingAddress shippingAddress = new ShippingAddress(user);
         shippingAddress.setCity("TestCity");
         shippingAddress.setZipcode("Testzipcode");
@@ -182,6 +188,8 @@ public class DaoTest extends AbstractTest {
         item.setName("Chair");
         item.setBuyNowPrice(new MonetaryAmount(BigDecimal.TEN, new Currency("CHF")));
         item.setInitialPriceWithCurrency(new MonetaryAmount(BigDecimal.TEN, new Currency("USD")));
+        item.setAuctionStart(new Date());
+        item.setAuctionEnd(new Date());
         return item;
     }
 }

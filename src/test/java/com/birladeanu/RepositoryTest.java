@@ -49,6 +49,8 @@ public class RepositoryTest extends AbstractTest {
         item.setDescription("Some long description");
         item.setBuyNowPrice(new MonetaryAmount(BigDecimal.TEN, new Currency("USD")));
         item.setInitialPriceWithCurrency(new MonetaryAmount(BigDecimal.TEN, new Currency("CHF")));
+        item.setAuctionEnd(new Date());
+        item.setAuctionStart(new Date());
         Bid bid = new Bid(item);
         bid.setAmount(BigDecimal.TEN);
         bid.setCreatedOn(new Date());

@@ -3,10 +3,11 @@ package com.birladeanu.dal.model;
 import com.birladeanu.dal.model.embedabble.Address;
 import com.birladeanu.dal.model.parent.BillingDetails;
 import com.birladeanu.dal.model.parent.MainModel;
-import lombok.*;
+import lombok.Data;
+import lombok.NonNull;
+import lombok.Setter;
 
 import javax.persistence.*;
-import javax.persistence.criteria.Fetch;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -15,10 +16,36 @@ import java.util.Set;
  */
 @Entity(name = "USERS")
 @Data
+@Table(
+        name = "USERS",
+        uniqueConstraints =
+        @UniqueConstraint(
+                name = "UNQ_USERNAME_EMAIL",
+                columnNames = { "USERNAME", "EMAIL" }
+        ),
+        indexes = {
+                @Index(
+                        name = "IDX_USERNAME",
+                        columnList = "USERNAME"
+                ),
+                @Index(
+                        name = "IDX_USERNAME_EMAIL",
+                        columnList = "USERNAME, EMAIL"
+                )
+        }
+)
 public class User extends MainModel {
 
     @Embedded
     protected Address homeAddress;
+
+    @NonNull
+    @Setter
+    protected String userName;
+
+    @NonNull
+    @Setter
+    protected String email;
 
     @Embedded
     @AttributeOverrides({
