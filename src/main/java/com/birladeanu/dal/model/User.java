@@ -34,6 +34,9 @@ import java.util.Set;
                 )
         }
 )
+@org.hibernate.annotations.OptimisticLocking(
+        type = org.hibernate.annotations.OptimisticLockType.ALL)
+@org.hibernate.annotations.DynamicUpdate
 public class User extends MainModel {
 
     @Embedded

@@ -183,13 +183,4 @@ public class DaoTest extends AbstractTest {
         assertThat(savedItem.getImagesMap().size(), is(item.getImagesMap().size()));
     }
 
-    private Item createSimpleItem() {
-        Item item = new Item();
-        item.setName("Chair");
-        item.setBuyNowPrice(new MonetaryAmount(BigDecimal.TEN, new Currency("CHF")));
-        item.setInitialPriceWithCurrency(new MonetaryAmount(BigDecimal.TEN, new Currency("USD")));
-        item.setAuctionStart(new Date());
-        item.setAuctionEnd(new Date());
-        return item;
-    }
 }

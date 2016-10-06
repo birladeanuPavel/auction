@@ -29,9 +29,13 @@ import static com.birladeanu.dal.model.enums.AuctionTypeEnum.HIGHEST_BID;
  */
 @Entity
 @Getter
-@EqualsAndHashCode(exclude = "bids, stringSetImages, stringImageBag, stringImageList, stringImageMap, itemImages")
+@EqualsAndHashCode(exclude = {"bids", "stringSetImages",
+        "stringImageBag", "stringImageList", "stringImageMap", "itemImages"})
 @Check(constraints = "auctionStart < auctionEnd")
 public class Item extends MainModel {
+
+    @Version
+    protected long version;
 
     @NotNull
     @Setter

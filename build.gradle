@@ -77,6 +77,8 @@ dependencies {
 
 	compile "org.projectlombok:lombok:1.16.10"
 
+//	Test
+	testCompile('org.testng:testng:6.9.13.6')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 
