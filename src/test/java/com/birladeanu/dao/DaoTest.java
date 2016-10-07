@@ -1,12 +1,15 @@
-package com.birladeanu;
+package com.birladeanu.dao;
 
+import com.birladeanu.AbstractTest;
+import com.birladeanu.TestDataProvider;
 import com.birladeanu.dal.dao.GenericDao;
 import com.birladeanu.dal.model.*;
-import com.birladeanu.dal.model.embedabble.*;
+import com.birladeanu.dal.model.embedabble.Dimension;
+import com.birladeanu.dal.model.embedabble.Filename;
+import com.birladeanu.dal.model.embedabble.ItemImage;
+import com.birladeanu.dal.model.embedabble.Weight;
 import com.birladeanu.dal.model.helpers.Currency;
-import com.birladeanu.dal.model.helpers.GermanZipcode;
 import com.birladeanu.dal.model.helpers.MonetaryAmount;
-import com.birladeanu.dal.model.helpers.SwissZipcode;
 import com.birladeanu.dal.model.parent.BillingDetails;
 import com.birladeanu.dal.model.subselect.ItemBidSummary;
 import com.google.common.collect.Sets;
@@ -76,7 +79,7 @@ public class DaoTest extends AbstractTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testNamedQuery() {
-        Item item = createSimpleItem();
+        Item item = TestDataProvider.createSimpleItem();
         genericDao.persist(item);
         Item item2 = new Item();
         item2.setName("Table");
@@ -97,7 +100,7 @@ public class DaoTest extends AbstractTest {
 
     @Test
     public void testItemBidSummary() {
-        Item item = createSimpleItem();
+        Item item = TestDataProvider.createSimpleItem();
         Bid bid = new Bid(item);
         bid.setAmount(BigDecimal.TEN);
         bid.setCreatedOn(new Date());
@@ -116,27 +119,14 @@ public class DaoTest extends AbstractTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testUser() {
-        City homeCity = new City("homeCity", new GermanZipcode("12342"), "homeCountry");
-        Address homeAddress = new Address("someStree", homeCity);
-        City billingCity = new City("billinbCity", new SwissZipcode("5415"), "billingCountry");
-        Address billingAddress = new Address("someStree", billingCity);
-        BillingDetails defaultBilling = new CreditCard("Jown", "1234", "06", "06");
         BillingDetails firstBillDetail = new BankAccount("Owner", "123", "06", "15");
         BillingDetails secondBillDetail = new CreditCard("Owner", "123", "06", "15");
+        BillingDetails defaultBilling = new CreditCard("Jown", "1234", "06", "06");
 
-        User user = new User(homeAddress);
-        user.setUserName("test");
-        user.setEmail("test@mail.ru");
-        ShippingAddress shippingAddress = new ShippingAddress(user);
-        shippingAddress.setCity("TestCity");
-        shippingAddress.setZipcode("Testzipcode");
-        shippingAddress.setStreet("Teststreet");
-        user.setShippingAddress(shippingAddress);
-        user.setBillingAdress(billingAddress);
-        user.setDefaultBilling(defaultBilling);
+        User user = TestDataProvider.createSimpleUser();
         user.getBillingDetails().add(firstBillDetail);
         user.getBillingDetails().add(secondBillDetail);
-
+        user.setDefaultBilling(defaultBilling);
         firstBillDetail.setUser(user);
         secondBillDetail.setUser(user);
 
@@ -162,7 +152,7 @@ public class DaoTest extends AbstractTest {
 
     @Test
     public void testItemCollections() {
-        Item item = createSimpleItem();
+        Item item = TestDataProvider.createSimpleItem();
         item.setStringImageBag(Arrays.asList("D", "A", "B", "C"));
         item.setStringImageList(Arrays.asList("C", "B", "D"));
         item.setStringSetImages(Sets.newHashSet("A", "B", "C"));

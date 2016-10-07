@@ -1,10 +1,9 @@
-package com.birladeanu;
+package com.birladeanu.service;
 
+import com.birladeanu.TestDataProvider;
 import com.birladeanu.config.AppConfig;
 import com.birladeanu.dal.model.Item;
-import com.birladeanu.dal.model.helpers.Currency;
-import com.birladeanu.dal.model.helpers.MonetaryAmount;
-import com.birladeanu.service.ItemService;
+import com.birladeanu.dal.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.test.context.ContextConfiguration;
@@ -13,8 +12,6 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import javax.persistence.OptimisticLockException;
-import java.math.BigDecimal;
-import java.util.Date;
 
 /**
  * Created by pavel on 10/6/16.
@@ -25,12 +22,18 @@ public class ServiceTest  extends AbstractTestNGSpringContextTests {
     @Autowired
     private ItemService itemService;
 
+    @Autowired
+    private UserService userService;
+
     private Item item;
+    private User user;
 
     @BeforeClass
     public void before(){
-        item = createSimpleItem();
+        item = TestDataProvider.createSimpleItem();
         itemService.save(item);
+        user = TestDataProvider.createSimpleUser();
+        userService.save(user);
     }
 
     @Test(threadPoolSize = 2, invocationCount = 9,
@@ -41,13 +44,14 @@ public class ServiceTest  extends AbstractTestNGSpringContextTests {
         itemService.save(item);
     }
 
-    private Item createSimpleItem() {
-        Item item = new Item();
-        item.setName("Chair");
-        item.setBuyNowPrice(new MonetaryAmount(BigDecimal.TEN, new Currency("CHF")));
-        item.setInitialPriceWithCurrency(new MonetaryAmount(BigDecimal.TEN, new Currency("USD")));
-        item.setAuctionStart(new Date());
-        item.setAuctionEnd(new Date());
-        return item;
+    @Test(threadPoolSize = 8, invocationCount = 50,
+            expectedExceptions = {OptimisticLockException.class,
+                    ObjectOptimisticLockingFailureException.class}
+    )
+
+    public void userService() {
+        user.setEmail("AnotherEmail");
+        userService.save(user);
     }
+
 }

@@ -30,7 +30,8 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 repositories {
-	mavenCentral()
+	mavenCentral();
+	jcenter();
 }
 
 ext {
@@ -46,6 +47,11 @@ import io.franzbecker.gradle.lombok.task.DelombokTask
 
 task delombok(type: DelombokTask) {
 	args("src/main/java", "-d", "src/delombok/java")
+}
+
+//Lombok
+lombok { // optional: values below are the defaults
+	version = "1.16.10"
 }
 
 //Webpack
@@ -74,8 +80,6 @@ dependencies {
 	compile "com.querydsl:querydsl-core:${querydslVersion}"
 	compile "com.querydsl:querydsl-jpa:${querydslVersion}"
 	compile "com.querydsl:querydsl-apt:${querydslVersion}"
-
-	compile "org.projectlombok:lombok:1.16.10"
 
 //	Test
 	testCompile('org.testng:testng:6.9.13.6')

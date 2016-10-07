@@ -1,9 +1,10 @@
-package com.birladeanu;
+package com.birladeanu.dao;
 
-import com.birladeanu.dal.model.*;
+import com.birladeanu.AbstractTest;
+import com.birladeanu.dal.model.Bid;
+import com.birladeanu.dal.model.Item;
 import com.birladeanu.dal.model.helpers.Currency;
 import com.birladeanu.dal.model.helpers.MonetaryAmount;
-import com.birladeanu.dal.model.Bid;
 import com.birladeanu.dal.repository.BidRepository;
 import com.birladeanu.dal.repository.ItemRepository;
 import com.birladeanu.dal.repository.UserRepository;
