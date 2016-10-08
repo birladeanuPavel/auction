@@ -18,6 +18,7 @@ plugins {
 }
 
 apply plugin: 'java'
+apply plugin: 'idea'
 apply plugin: 'eclipse'
 apply plugin: 'spring-boot'
 apply plugin: "com.moowork.node"
@@ -81,9 +82,14 @@ dependencies {
 	compile "com.querydsl:querydsl-jpa:${querydslVersion}"
 	compile "com.querydsl:querydsl-apt:${querydslVersion}"
 
+	compile ('org.springframework.boot:spring-boot-starter-log4j2')
 //	Test
 	testCompile('org.testng:testng:6.9.13.6')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
+}
+
+configurations {
+	all*.exclude module: 'spring-boot-starter-logging'
 }
 
 
