@@ -1,7 +1,9 @@
 package com.birladeanu.dal.model;
 
 import com.birladeanu.dal.model.parent.BillingDetails;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
@@ -11,6 +13,7 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PACKAGE)
 public class BankAccount extends BillingDetails {
 
     @NotNull

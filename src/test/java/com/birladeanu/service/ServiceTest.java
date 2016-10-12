@@ -1,57 +1,38 @@
 package com.birladeanu.service;
 
+import com.birladeanu.AbstractTest;
 import com.birladeanu.TestDataProvider;
-import com.birladeanu.config.AppConfig;
-import com.birladeanu.dal.model.Item;
+import com.birladeanu.dal.model.BankAccount;
 import com.birladeanu.dal.model.User;
+import com.birladeanu.dal.model.parent.BillingDetails;
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.ObjectOptimisticLockingFailureException;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+import org.springframework.test.annotation.Rollback;
 
-import javax.persistence.OptimisticLockException;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 
 /**
- * Created by pavel on 10/6/16.
+ * Created by pavel on 10/12/16.
  */
-@ContextConfiguration(classes = AppConfig.class)
-public class ServiceTest  extends AbstractTestNGSpringContextTests {
-
-    @Autowired
-    private ItemService itemService;
+public class ServiceTest extends AbstractTest{
 
     @Autowired
     private UserService userService;
 
-    private Item item;
-    private User user;
+    @Test
+    @Rollback(value = false)
+    public void userLazyBillingTest() {
+//        BillingDetails firstBillDetail = new BankAccount("Owner", "123", "06", "15");
+//
+//        User user = TestDataProvider.createSimpleUser();
+//        user.getBillingDetails().add(firstBillDetail);
 
-    @BeforeClass
-    public void before(){
-        item = TestDataProvider.createSimpleItem();
-        itemService.save(item);
-        user = TestDataProvider.createSimpleUser();
-        userService.save(user);
-    }
-
-    @Test(threadPoolSize = 2, invocationCount = 9,
-            expectedExceptions = {OptimisticLockException.class,
-                    ObjectOptimisticLockingFailureException.class})
-    public void itemService() {
-        item.setDescription("First");
-        itemService.save(item);
-    }
-
-    @Test(threadPoolSize = 8, invocationCount = 50,
-            expectedExceptions = {OptimisticLockException.class,
-                    ObjectOptimisticLockingFailureException.class}
-    )
-
-    public void userService() {
-        user.setEmail("AnotherEmail");
-        userService.save(user);
+//        userService.save(user);
+//        assertNotNull(user.getId());
+        User userFromDb = userService.findOne(1114L);
+        assertThat(userFromDb.getBillingDetails().size(), is(0));
     }
 
 }

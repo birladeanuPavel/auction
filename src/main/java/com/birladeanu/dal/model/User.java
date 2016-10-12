@@ -3,9 +3,9 @@ package com.birladeanu.dal.model;
 import com.birladeanu.dal.model.embedabble.Address;
 import com.birladeanu.dal.model.parent.BillingDetails;
 import com.birladeanu.dal.model.parent.MainModel;
-import lombok.Data;
-import lombok.NonNull;
-import lombok.Setter;
+import lombok.*;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -37,6 +37,7 @@ import java.util.Set;
 @org.hibernate.annotations.OptimisticLocking(
         type = org.hibernate.annotations.OptimisticLockType.ALL)
 @org.hibernate.annotations.DynamicUpdate
+@NoArgsConstructor(access = AccessLevel.PACKAGE)
 public class User extends MainModel {
 
     @Embedded
@@ -73,11 +74,9 @@ public class User extends MainModel {
     @ManyToOne(fetch = FetchType.LAZY)
     protected BillingDetails defaultBilling;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
+    @LazyCollection(value = LazyCollectionOption.EXTRA)
     protected Set<BillingDetails> billingDetails = new HashSet<>();
-
-    protected User() {
-    }
 
     public User(Address homeAddress) {
         this.homeAddress = homeAddress;
