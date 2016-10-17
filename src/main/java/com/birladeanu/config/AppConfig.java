@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
-import java.util.Properties;
 
 /**
  * Created by pavel on 8/28/16.
@@ -39,6 +38,7 @@ public class AppConfig {
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         vendorAdapter.setGenerateDdl(true);
         vendorAdapter.setShowSql(true);
+        vendorAdapter.setDatabasePlatform(environment.getRequiredProperty("jdbc.dialect"));
 
         LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
         factory.setJpaVendorAdapter(vendorAdapter);
@@ -56,14 +56,6 @@ public class AppConfig {
         dataSource.setUrl(environment.getRequiredProperty("jdbc.url"));
         dataSource.setUsername(environment.getRequiredProperty("jdbc.username"));
         dataSource.setPassword(environment.getRequiredProperty("jdbc.password"));
-        Properties connectionProperties = new Properties();
-        connectionProperties.setProperty("dialect", environment.getRequiredProperty("jdbc.dialect"));
-        connectionProperties.setProperty("c3p0.min_size", environment.getRequiredProperty("c3p0.min_size"));
-        connectionProperties.setProperty("c3p0.max_size", environment.getRequiredProperty("c3p0.max_size"));
-        connectionProperties.setProperty("c3p0.timeout", environment.getRequiredProperty("c3p0.timeout"));
-        connectionProperties.setProperty("c3p0.max_statements", environment.getRequiredProperty("c3p0.max_statements"));
-        connectionProperties.setProperty("c3p0.idle_test_period", environment.getRequiredProperty("c3p0.idle_test_period"));
-        dataSource.setConnectionProperties(connectionProperties);
         return dataSource;
     }
 
