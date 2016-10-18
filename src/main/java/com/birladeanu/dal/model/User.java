@@ -36,7 +36,9 @@ import java.util.Set;
 )
 @org.hibernate.annotations.OptimisticLocking(
         type = org.hibernate.annotations.OptimisticLockType.ALL)
+//update only changed data
 @org.hibernate.annotations.DynamicUpdate
+@org.hibernate.annotations.BatchSize(size = 10)
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 public class User extends MainModel {
 

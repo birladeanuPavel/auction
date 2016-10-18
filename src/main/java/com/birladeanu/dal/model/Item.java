@@ -116,13 +116,19 @@ public class Item extends MainModel {
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.PERSIST)
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @org.hibernate.annotations.BatchSize(size = 10)
     protected Set<Bid> bids = new HashSet<>();
 
 //    String image mappings [Just for study]
+
+    //init all data when collection is initialized
     @ElementCollection
     @CollectionTable(
             name = "STRING_IMAGE_SET",
             joinColumns = @JoinColumn(name = "ITEM_ID")
+    )
+    @org.hibernate.annotations.Fetch(
+            FetchMode.SUBSELECT
     )
     @Column(name = "FILENAME")
     @Setter
@@ -137,6 +143,10 @@ public class Item extends MainModel {
             generator = "ID_GENERATOR"
     )
     @OrderBy(clause = "FILENAME desc")
+    //loads collection eager but with selects instead of joins(performance, no duplicates for set)
+    @org.hibernate.annotations.Fetch(
+            FetchMode.SELECT
+    )
     @Setter
     protected Collection<String> stringImageBag = new ArrayList<>();
 
