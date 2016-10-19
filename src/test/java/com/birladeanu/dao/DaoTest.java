@@ -14,12 +14,14 @@ import com.birladeanu.dal.model.parent.BillingDetails;
 import com.birladeanu.dal.model.subselect.ItemBidSummary;
 import com.google.common.collect.Sets;
 import org.assertj.core.util.Maps;
+import org.hibernate.Session;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 
 import static com.birladeanu.dal.model.enums.AuctionTypeEnum.FIXED_PRICE;
@@ -171,6 +173,30 @@ public class DaoTest extends AbstractTest {
         assertThat(savedItem.getStringImageMap().size(), is(item.getStringImageMap().size()));
         assertThat(savedItem.getItemImages().size(), is(item.getItemImages().size()));
         assertThat(savedItem.getImagesMap().size(), is(item.getImagesMap().size()));
+    }
+
+    @Test
+    //Used to override default fetching
+    public void testFetchProfile() {
+        Item item = TestDataProvider.createSimpleItem();
+        item.setItemImages(Sets.newHashSet(new ItemImage(item, "title", "someFile", 1, 1)));
+        Bid bid = new Bid(item);
+        bid.setAmount(BigDecimal.TEN);
+        bid.setCreatedOn(new Date());
+        genericDao.getEntityManager().persist(item);
+        genericDao.getEntityManager().flush();
+
+        genericDao.getEntityManager().unwrap(Session.class)
+                .enableFetchProfile(Item.PROFILE_JOIN_ITEM_IMAGE);
+        item = genericDao.getEntityManager().find(Item.class, item.getId());
+        assertThat(item.getItemImages().size(), is(1));
+        genericDao.getEntityManager().clear();
+
+
+        genericDao.getEntityManager().unwrap(Session.class)
+                .enableFetchProfile(Item.PROFILE_JOIN_BIDS);
+        item = genericDao.getEntityManager().find(Item.class, item.getId());
+        assertThat(item.getBids().size(), is(1));
     }
 
 }

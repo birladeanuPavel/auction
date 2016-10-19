@@ -34,6 +34,9 @@ import static com.birladeanu.dal.model.enums.AuctionTypeEnum.HIGHEST_BID;
 @Check(constraints = "auctionStart < auctionEnd")
 public class Item extends MainModel {
 
+    public static final String PROFILE_JOIN_ITEM_IMAGE = "PROFILE_JOIN_ITEM_IMAGE";
+    public static final String PROFILE_JOIN_BIDS = "PROFILE_JOIN_BIDS";
+
     @Version
     protected long version;
 
