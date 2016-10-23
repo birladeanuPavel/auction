@@ -19,10 +19,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 import static com.birladeanu.dal.model.enums.AuctionTypeEnum.FIXED_PRICE;
 import static org.hamcrest.Matchers.is;
@@ -176,7 +173,7 @@ public class DaoTest extends AbstractTest {
     }
 
     @Test
-    //Used to override default fetching
+    //Used to override default fetching with profiles
     public void testFetchProfile() {
         Item item = TestDataProvider.createSimpleItem();
         item.setItemImages(Sets.newHashSet(new ItemImage(item, "title", "someFile", 1, 1)));
@@ -199,4 +196,29 @@ public class DaoTest extends AbstractTest {
         assertThat(item.getBids().size(), is(1));
     }
 
+
+    @Test
+    public void testNamedEntityGraphs() {
+        Item item = TestDataProvider.createSimpleItem();
+        item.setItemImages(Sets.newHashSet(new ItemImage(item, "title", "someFile", 1, 1)));
+        Bid bid = new Bid(item);
+        bid.setAmount(BigDecimal.TEN);
+        bid.setCreatedOn(new Date());
+        User simpleUser = TestDataProvider.createSimpleUser();
+        BillingDetails defaultBilling = new CreditCard("Jown", "1234", "06", "06");
+        simpleUser.setDefaultBilling(defaultBilling);
+        bid.setBidder(simpleUser);
+        genericDao.getEntityManager().persist(simpleUser);
+        genericDao.getEntityManager().persist(defaultBilling);
+        genericDao.getEntityManager().persist(item);
+        genericDao.getEntityManager().flush();
+
+        Map<String, Object> properties = new HashMap<>();
+        properties.put(
+                "javax.persistence.loadgraph",
+                genericDao.getEntityManager().getEntityGraph("BidBidder")
+        );
+        bid = genericDao.getEntityManager().find(Bid.class, bid.getId());
+        assertNotNull(bid.getBidder().getDefaultBilling());
+    }
 }
