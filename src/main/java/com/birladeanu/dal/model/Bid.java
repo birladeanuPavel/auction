@@ -1,9 +1,7 @@
 package com.birladeanu.dal.model;
 
 import com.birladeanu.dal.model.parent.MainModel;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.Immutable;
 
 import javax.persistence.*;
@@ -16,8 +14,31 @@ import java.util.Date;
  * Created by pavel on 8/28/16.
  */
 @Entity
+//bidder will be loaded eager as well his defaultBilling and billingDetails entities
+@NamedEntityGraphs(
+        @NamedEntityGraph(
+                name = "BidBidder",
+                attributeNodes = {
+                        @NamedAttributeNode(
+                                value = "bidder",
+                                subgraph = "BidderBilling"
+                        )
+                },
+                subgraphs = {
+                        @NamedSubgraph(
+                                name = "BidderDefaultBilling",
+                                attributeNodes = {
+                                        @NamedAttributeNode("defaultBilling"),
+                                        @NamedAttributeNode("billingDetails")
+                                }
+                        )
+                }
+        )
+)
 @Immutable
+@NoArgsConstructor(access = AccessLevel.PACKAGE)
 @EqualsAndHashCode(exclude = "item")
+@ToString
 @Getter
 public class Bid extends MainModel {
 
@@ -37,8 +58,9 @@ public class Bid extends MainModel {
 //    @JoinColumn
     protected Item item;
 
-    protected Bid() {
-    }
+    @Setter
+    @ManyToOne
+    protected User bidder;
 
     public Bid(Item item) {
         this.item = item;

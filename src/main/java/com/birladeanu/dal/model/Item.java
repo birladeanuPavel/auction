@@ -8,10 +8,9 @@ import com.birladeanu.dal.model.embedabble.Weight;
 import com.birladeanu.dal.model.enums.AuctionTypeEnum;
 import com.birladeanu.dal.model.helpers.MonetaryAmount;
 import com.birladeanu.dal.model.parent.MainModel;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.*;
+import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.OrderBy;
 
 import javax.persistence.CascadeType;
@@ -28,10 +27,20 @@ import static com.birladeanu.dal.model.enums.AuctionTypeEnum.HIGHEST_BID;
  * Created by pavel on 8/28/16.
  */
 @Entity
+// used to load named entities eager
+@NamedEntityGraphs(
+        @NamedEntityGraph(
+                name = "ItemImages",
+                attributeNodes = {
+                        @NamedAttributeNode("stringImageList")
+                }
+        )
+)
+@org.hibernate.annotations.Check(constraints = "auctionStart < auctionEnd")
 @Getter
 @EqualsAndHashCode(exclude = {"bids", "stringSetImages",
         "stringImageBag", "stringImageList", "stringImageMap", "itemImages"})
-@Check(constraints = "auctionStart < auctionEnd")
+@ToString
 public class Item extends MainModel {
 
     public static final String PROFILE_JOIN_ITEM_IMAGE = "PROFILE_JOIN_ITEM_IMAGE";
