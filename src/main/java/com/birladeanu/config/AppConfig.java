@@ -48,11 +48,13 @@ public class AppConfig {
         factory.setJpaVendorAdapter(vendorAdapter);
         factory.setPackagesToScan("com.birladeanu.dal.model");
         factory.setDataSource(dataSource());
+        //Session interceptor
         Map<String, String> jpaPropertiesMap = new HashMap<>();
         jpaPropertiesMap.put(
                 AvailableSettings.SESSION_INTERCEPTOR,
                 ItemAuditInterceptor.class.getName()
         );
+        //Interceptor for all session, must be thread safe and with no session data
 //        Map<String, Object> jpaPropertiesMap = new HashMap<>();
 //        jpaPropertiesMap.put(
 //                AvailableSettings.INTERCEPTOR,

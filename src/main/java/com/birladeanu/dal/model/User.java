@@ -40,6 +40,7 @@ import java.util.Set;
 @org.hibernate.annotations.DynamicUpdate
 @org.hibernate.annotations.BatchSize(size = 10)
 @EntityListeners(UserListener.class)
+@org.hibernate.envers.Audited
 @Data
 @ToString(exclude = {"billingDetails"})
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
@@ -67,6 +68,7 @@ public class User extends MainModel {
             @AttributeOverride(name = "city.country",
                     column = @Column(name = "BILLING_COUNTRY"))
     })
+    @org.hibernate.envers.NotAudited
     protected Address billingAdress;
 
     @OneToOne(
@@ -74,13 +76,16 @@ public class User extends MainModel {
 //            optional = false,
             mappedBy = "user",
             cascade = CascadeType.PERSIST)
+    @org.hibernate.envers.NotAudited
     protected ShippingAddress shippingAddress;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @org.hibernate.envers.NotAudited
     protected BillingDetails defaultBilling;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
     @LazyCollection(value = LazyCollectionOption.EXTRA)
+    @org.hibernate.envers.NotAudited
     protected Set<BillingDetails> billingDetails = new HashSet<>();
 
     public User(Address homeAddress) {
