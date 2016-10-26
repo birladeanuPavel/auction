@@ -1,6 +1,7 @@
 package com.birladeanu.dal.model;
 
 import com.birladeanu.dal.model.embedabble.Address;
+import com.birladeanu.dal.model.listener.UserListener;
 import com.birladeanu.dal.model.parent.BillingDetails;
 import com.birladeanu.dal.model.parent.MainModel;
 import lombok.*;
@@ -15,7 +16,6 @@ import java.util.Set;
  * Created by pavel on 9/10/16.
  */
 @Entity(name = "USERS")
-@Data
 @Table(
         name = "USERS",
         uniqueConstraints =
@@ -39,6 +39,9 @@ import java.util.Set;
 //update only changed data
 @org.hibernate.annotations.DynamicUpdate
 @org.hibernate.annotations.BatchSize(size = 10)
+@EntityListeners(UserListener.class)
+@Data
+@ToString(exclude = {"billingDetails"})
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 public class User extends MainModel {
 

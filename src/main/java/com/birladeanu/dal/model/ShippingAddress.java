@@ -14,7 +14,7 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Getter
 @EqualsAndHashCode(exclude = "user")
-@ToString
+@ToString(exclude = "user")
 public class ShippingAddress {
 
     @Id

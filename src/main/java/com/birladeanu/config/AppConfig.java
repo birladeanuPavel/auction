@@ -1,5 +1,7 @@
 package com.birladeanu.config;
 
+import com.birladeanu.dal.model.interceptor.ItemAuditInterceptor;
+import org.hibernate.jpa.AvailableSettings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -19,6 +21,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by pavel on 8/28/16.
@@ -26,7 +30,7 @@ import javax.sql.DataSource;
 @Configuration
 @EnableJpaRepositories("com.birladeanu.dal.repository")
 @EnableTransactionManagement
-@ComponentScan(basePackages = {"com.birladeanu.service", "com.birladeanu.dal.dao"})
+@ComponentScan(basePackages = {"com.birladeanu.service", "com.birladeanu.dal.dao", "com.birladeanu.dal.model.interceptor"})
 @PropertySource(value = { "classpath:database.properties" })
 public class AppConfig {
 
@@ -44,6 +48,17 @@ public class AppConfig {
         factory.setJpaVendorAdapter(vendorAdapter);
         factory.setPackagesToScan("com.birladeanu.dal.model");
         factory.setDataSource(dataSource());
+        Map<String, String> jpaPropertiesMap = new HashMap<>();
+        jpaPropertiesMap.put(
+                AvailableSettings.SESSION_INTERCEPTOR,
+                ItemAuditInterceptor.class.getName()
+        );
+//        Map<String, Object> jpaPropertiesMap = new HashMap<>();
+//        jpaPropertiesMap.put(
+//                AvailableSettings.INTERCEPTOR,
+//                new ItemAuditInterceptor()
+//        );
+        factory.setJpaPropertyMap(jpaPropertiesMap);
         factory.afterPropertiesSet();
 
         return factory.getObject();
@@ -78,4 +93,20 @@ public class AppConfig {
 
         };
     }
+
+//    @Bean
+//    public Advisor traceAdvisor(ItemAuditInterceptor advice) {
+//
+//        AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut();
+//        pointcut.setExpression("execution(public * org.springframework.data.repository.Repository+.*(..))");
+//
+//        return new DefaultPointcutAdvisor(pointcut, advice);
+//    }
+
+//    @Bean
+//    public ItemAuditInterceptor interceptor() {
+//        ItemAuditInterceptor itemAuditInterceptor = new ItemAuditInterceptor();
+//        return itemAuditInterceptor;
+//    }
+
 }

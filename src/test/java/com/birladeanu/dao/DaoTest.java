@@ -10,13 +10,16 @@ import com.birladeanu.dal.model.embedabble.ItemImage;
 import com.birladeanu.dal.model.embedabble.Weight;
 import com.birladeanu.dal.model.helpers.Currency;
 import com.birladeanu.dal.model.helpers.MonetaryAmount;
+import com.birladeanu.dal.model.interceptor.ItemAuditInterceptor;
 import com.birladeanu.dal.model.parent.BillingDetails;
 import com.birladeanu.dal.model.subselect.ItemBidSummary;
 import com.google.common.collect.Sets;
 import org.assertj.core.util.Maps;
 import org.hibernate.Session;
+import org.hibernate.engine.spi.SessionImplementor;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -99,6 +102,10 @@ public class DaoTest extends AbstractTest {
 
     @Test
     public void testItemBidSummary() {
+        Session session = genericDao.getEntityManager().unwrap(Session.class);
+        ItemAuditInterceptor interceptor =
+                (ItemAuditInterceptor) ((SessionImplementor) session).getInterceptor();
+        interceptor.setCurrentSession(session);
         Item item = TestDataProvider.createSimpleItem();
         Bid bid = new Bid(item);
         bid.setAmount(BigDecimal.TEN);

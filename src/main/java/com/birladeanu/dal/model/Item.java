@@ -40,7 +40,8 @@ import static com.birladeanu.dal.model.enums.AuctionTypeEnum.HIGHEST_BID;
 @Getter
 @EqualsAndHashCode(exclude = {"bids", "stringSetImages",
         "stringImageBag", "stringImageList", "stringImageMap", "itemImages"})
-@ToString
+@ToString(exclude = {"bids", "stringSetImages",
+        "stringImageBag", "stringImageList", "stringImageMap", "itemImages", "shipment", "imagesMap"})
 public class Item extends MainModel {
 
     public static final String PROFILE_JOIN_ITEM_IMAGE = "PROFILE_JOIN_ITEM_IMAGE";
