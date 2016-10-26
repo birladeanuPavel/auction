@@ -88,6 +88,9 @@ public class User extends MainModel {
     @org.hibernate.envers.NotAudited
     protected Set<BillingDetails> billingDetails = new HashSet<>();
 
+    @Setter
+    protected int rank = 0;
+
     public User(Address homeAddress) {
         this.homeAddress = homeAddress;
     }

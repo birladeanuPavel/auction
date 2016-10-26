@@ -15,11 +15,11 @@ import com.birladeanu.dal.model.parent.BillingDetails;
 import com.birladeanu.dal.model.subselect.ItemBidSummary;
 import com.google.common.collect.Sets;
 import org.assertj.core.util.Maps;
+import org.hibernate.Filter;
 import org.hibernate.Session;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.Rollback;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -227,5 +227,28 @@ public class DaoTest extends AbstractTest {
         );
         bid = genericDao.getEntityManager().find(Bid.class, bid.getId());
         assertNotNull(bid.getBidder().getDefaultBilling());
+    }
+
+    @Test
+    public void testItemFilter() {
+        Filter filter = genericDao.getEntityManager().unwrap(Session.class)
+                .enableFilter("limitByUserRank");
+        filter.setParameter("currentUserRank", 0);
+
+        Item item1 = TestDataProvider.createSimpleItem();
+        Item item2 = TestDataProvider.createSimpleItem();
+
+        User user1 = TestDataProvider.createSimpleUser();
+        user1.setEmail("Another@mail.com");
+        user1.setRank(1);
+        item1.setSeller(user1);
+        User user2 = TestDataProvider.createSimpleUser();
+        item2.setSeller(user2);
+
+        genericDao.persist(item1);
+        genericDao.persist(item2);
+
+        List<Item> items = (List<Item>) genericDao.getEntityManager().createQuery("select i from Item i").getResultList();
+        assertThat(items.size(), is(1));
     }
 }

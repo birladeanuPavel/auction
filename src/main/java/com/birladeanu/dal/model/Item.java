@@ -37,6 +37,14 @@ import static com.birladeanu.dal.model.enums.AuctionTypeEnum.HIGHEST_BID;
         )
 )
 @org.hibernate.annotations.Check(constraints = "auctionStart < auctionEnd")
+@org.hibernate.annotations.Filter(
+        name = "limitByUserRank",
+        condition =
+                ":currentUserRank >= (" +
+                        "select u.RANK from USERS u " +
+                        "where u.ID = SELLER_ID" +
+                        ")"
+)
 @Getter
 @EqualsAndHashCode(exclude = {"bids", "stringSetImages",
         "stringImageBag", "stringImageList", "stringImageMap", "itemImages"})
@@ -195,5 +203,9 @@ public class Item extends MainModel {
     )
     @Setter
     protected Shipment shipment;
+
+    @Setter
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    protected User seller;
 
 }

@@ -32,6 +32,19 @@
                 )
         )
 })
+@org.hibernate.annotations.FilterDef(
+        name = "limitByUserRank",
+//        defaultCondition=
+//                ":currentUserRank >= (" +
+//                        "select u.RANK from USERS u " +
+//                        "where u.ID = SELLER_ID" +
+//                        ")",
+        parameters = {
+                @org.hibernate.annotations.ParamDef(
+                        name = "currentUserRank", type = "int"
+                )
+        }
+)
 package com.birladeanu.dal.model;
 
 import org.hibernate.annotations.FetchMode;
