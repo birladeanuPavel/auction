@@ -21,6 +21,7 @@ import org.hibernate.engine.spi.SessionImplementor;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.persistence.TypedQuery;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -248,7 +249,8 @@ public class DaoTest extends AbstractTest {
         genericDao.persist(item1);
         genericDao.persist(item2);
 
-        List<Item> items = (List<Item>) genericDao.getEntityManager().createQuery("select i from Item i").getResultList();
+        TypedQuery<Item> typedQuery = genericDao.getEntityManager().createQuery("select i from Item i", Item.class);
+        List<Item> items = typedQuery.getResultList();
         assertThat(items.size(), is(1));
     }
 }

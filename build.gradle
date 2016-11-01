@@ -15,6 +15,7 @@ buildscript {
 plugins {
 	id 'io.franzbecker.gradle-lombok' version '1.7'
 	id "com.ewerk.gradle.plugins.querydsl" version "1.0.6"
+	id "at.comm_unity.gradle.plugins.jpamodelgen" version "1.1.1"
 }
 
 apply plugin: 'java'
@@ -22,6 +23,7 @@ apply plugin: 'idea'
 apply plugin: 'eclipse'
 apply plugin: 'spring-boot'
 apply plugin: "com.moowork.node"
+apply plugin: 'at.comm_unity.gradle.plugins.jpamodelgen'
 
 jar {
 	baseName = 'auction'
@@ -83,6 +85,7 @@ dependencies {
 	compile "com.querydsl:querydsl-jpa:${querydslVersion}"
 	compile "com.querydsl:querydsl-apt:${querydslVersion}"
 	compile "org.hibernate:hibernate-envers"
+//	compile "org.hibernate:hibernate-jpamodelgen:5.2.3.Final"
 
 //	Test
 	testCompile('org.testng:testng:6.9.13.6')
@@ -100,3 +103,18 @@ eclipse {
 		 containers 'org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8'
 	}
 }
+// JPA Metmodel generation(conflicts with lombok, run once then comment, plugin too)
+//sourceSets {
+//	generated {
+//		java.srcDir "${buildDir}/main/generated/src/java/"
+//	}
+//}
+
+ext['hibernate.version'] = '5.2.3.Final'
+
+jpaModelgen {
+	library = "org.hibernate:hibernate-jpamodelgen:5.2.3.Final"
+	jpaModelgenSourcesDir = "src/generated/java"
+}
+
+compileJava.options.compilerArgs += ["-proc:none"]
