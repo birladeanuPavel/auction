@@ -253,4 +253,27 @@ public class DaoTest extends AbstractTest {
         List<Item> items = typedQuery.getResultList();
         assertThat(items.size(), is(1));
     }
+
+    @Test
+    public void collectionFilter() {
+        Item item = TestDataProvider.createSimpleItem();
+        Bid bid1 = new Bid(item);
+        bid1.setAmount(BigDecimal.ZERO);
+        bid1.setCreatedOn(new Date());
+        Bid bid2 = new Bid(item);
+        bid2.setAmount(BigDecimal.TEN);
+        bid2.setCreatedOn(new Date());
+        genericDao.persist(item);
+        assertNotNull(item.getId());
+        genericDao.getEntityManager().flush();
+
+        Session session = genericDao.getEntityManager().unwrap(Session.class);
+
+        org.hibernate.Query query = session.createFilter(
+                item.getBids(),
+                "where this.amount = 10"
+        );
+        List<Bid> bids = query.list();
+        assertThat(bids.size(), is(1));
+    }
 }
